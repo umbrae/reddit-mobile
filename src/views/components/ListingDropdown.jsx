@@ -32,6 +32,7 @@ class ListingDropdown extends BaseComponent {
     this._cancelBubble = this._cancelBubble.bind(this);
 
     this._onHideClick = this._onHideClick.bind(this);
+    this._onRemoveClick = this._onRemoveClick.bind(this);
     this._onSaveClick = this._onSaveClick.bind(this);
     this._onEditClick = this._onEditClick.bind(this);
     this._onDelToggle = this._onDelToggle.bind(this);
@@ -47,6 +48,8 @@ class ListingDropdown extends BaseComponent {
 
     var hideLink;
     var saveLink;
+
+    var removeLink;
 
     if (props.token) {
       if (this.state.reportFormOpen) {
@@ -96,6 +99,17 @@ class ListingDropdown extends BaseComponent {
             </button>
           </li>
         );
+      }
+
+      if (props.showRemove) {
+        removeLink = (
+          <li className='Dropdown-li'>
+            <button className='Dropdown-button' onClick={ this._onRemoveClick }>
+              <span className='icon-flag-circled'>{' '}</span>
+              <span className='Dropdown-text'>Remove this</span>
+            </button>
+          </li>
+        )
       }
     }
 
@@ -192,6 +206,7 @@ class ListingDropdown extends BaseComponent {
         { saveLink }
         { hideLink }
         { reportLink }
+        { removeLink }
       </SeashellsDropdown>
     );
   }
@@ -250,6 +265,37 @@ class ListingDropdown extends BaseComponent {
 
     if (this.props.onHide) {
       this.props.onHide();
+    }
+  }
+
+  _onRemoveClick(e) {
+    e.preventDefault();
+
+    this.props.app.emit('remove', this.props.listing.id);
+
+    // This feels really very copyPasta
+    var options = this.props.app.api.buildOptions(this.props.apiOptions);
+    options = Object.assign(options, {
+      id: this.props.listing.name,
+    });
+
+    options.type = this.props.listing._type.toLowerCase();
+
+    this.props.app.api.remove.post(options).then(
+      () => { },
+      () => {
+        // Todo: This would be much better as some sort of modal.
+        alert("Sorry, we weren't able to remove this post. If you have permission, please check your connection and try again.");
+        this.setState({ removed: false });
+        if (this.props.onRemove) {
+          this.props.onRemove(false);
+        }
+      }
+    );
+
+    this.setState({ removed: true });
+    if (this.props.onRemove) {
+      this.props.onRemove();
     }
   }
 
@@ -327,6 +373,7 @@ ListingDropdown.propTypes = {
   onReport: React.PropTypes.func.isRequired,
   permalink: React.PropTypes.string,
   showDel: React.PropTypes.bool,
+  showRemove: React.PropTypes.bool,
   showEdit: React.PropTypes.bool.isRequired,
   showHide: React.PropTypes.bool,
 };

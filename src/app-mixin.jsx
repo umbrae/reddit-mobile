@@ -1,5 +1,8 @@
 import React from 'react';
 
+import indexBy from 'lodash/collection/indexBy';
+import mapValues from 'lodash/object/mapValues';
+
 // The base routes
 import redirects from './redirects';
 
@@ -134,6 +137,47 @@ function mixin (App) {
                 resolve(subreddits);
               });
             }
+          }, function(error) {
+            reject(error);
+          });
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    getUserModPermissions (ctx, getDefaults) {
+      var app = this;
+      var options =  Object.assign({}, ctx.props.apiOptions);
+
+      if (this.getState && this.getState('userModPermissions')){
+        return Promise.resolve(this.getState('userModPermissions'));
+      }
+
+      return new Promise(function(resolve, reject) {
+        var sort = 'default';
+
+        // Todo check if the user is a moderator at all so we can skip this check most of the time
+        
+        if (!ctx.token) {
+          return resolve([]);
+        }
+
+        options.headers['user-agent'] = ctx.headers['user-agent'];
+        options.query.sort = 'mine/moderator';
+        options.query.sr_detail = true;
+        options.query.feature = 'mobile_settings';
+        options.query.limit = 250;
+
+        try {
+          app.api.subreddits.get(options).then(function(subreddits) {
+            var subs = mapValues(indexBy(subreddits.body, 'display_name'), 'mod_permissions');
+
+            if (app.setState) {
+              app.setState('userModPermissions', subs);
+            }
+
+            resolve(subs);
           }, function(error) {
             reject(error);
           });

@@ -152,6 +152,7 @@ function routes(app) {
       }
 
       this.props.data.set('userSubscriptions', app.getUserSubscriptions(this));
+      this.props.data.set('userModPermissions', app.getUserModPermissions(this));
 
       yield next;
     }

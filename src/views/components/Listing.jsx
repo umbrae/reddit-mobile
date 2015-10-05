@@ -1,4 +1,7 @@
 import React from 'react/addons';
+
+import intersection from 'lodash/array/intersection';
+
 import constants from '../../constants';
 import globals from '../../globals';
 import mobilify from '../../lib/mobilify';
@@ -32,6 +35,7 @@ class Listing extends BaseComponent {
       tallestHeight: 0,
       reported: props.listing.reported,
       hidden: props.listing.hidden,
+      removed: props.listing.removed,
       width: (globals().winWidth || 300) - 10,
     };
 
@@ -39,6 +43,7 @@ class Listing extends BaseComponent {
     this.resize = this.resize.bind(this);
     this.onReport = this.onReport.bind(this);
     this.onHide = this.onHide.bind(this);
+    this.onRemove = this.onRemove.bind(this);
     this.expand = this.expand.bind(this);
   }
 
@@ -57,6 +62,10 @@ class Listing extends BaseComponent {
     this.setState({ hidden: true });
   }
 
+  onRemove(removed = true) {
+    this.setState({ removed: removed });
+  }
+
   //build headline
   _renderHeadline() {
     var props = this.props;
@@ -70,10 +79,15 @@ class Listing extends BaseComponent {
 
     var showEdit = false;
     var showDel = false;
+    var showRemove = false;
 
     if (props.user && props.single) {
       showEdit = (props.user.name === listing.author) && listing.is_self;
       showDel = props.user.name === listing.author;
+
+      console.log(props.userModPermissions);
+      var perms = props.userModPermissions;
+      showRemove = props.user.is_mod && perms[listing.subreddit] && (intersection(perms[listing.subreddit], ['all', 'modposts']));
     }
 
 
@@ -92,8 +106,10 @@ class Listing extends BaseComponent {
         onEdit={ props.toggleEdit }
         onDelete={ props.onDelete }
         showDel={ showDel }
+        showRemove={ showRemove }
         onReport={ this.onReport }
         onHide={ this.onHide }
+        onRemove={ this.onRemove }
       />
     );
 
@@ -254,7 +270,7 @@ class Listing extends BaseComponent {
 
   render() {
     var state = this.state;
-    if (state.hidden || state.reported) {
+    if (state.hidden || state.reported || state.removed) {
       return null;
     }
 
@@ -371,6 +387,7 @@ Listing.propTypes = {
   saveUpdatedText: React.PropTypes.func,
   single: React.PropTypes.bool,
   toggleEdit: React.PropTypes.func,
+  userModPermissions: React.PropTypes.object,
   z: React.PropTypes.number,
 };
 

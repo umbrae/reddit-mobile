@@ -137,6 +137,7 @@ class ListingList extends BaseComponent {
 
   render() {
     var props = this.props;
+    console.log(this.props);
     var page = props.firstPage || 0;
     var length = props.listings.length;
     var compact = this.state.compact;
@@ -212,6 +213,7 @@ ListingList.propTypes = {
   ])).isRequired,
   showAds: React.PropTypes.bool,
   showHidden: React.PropTypes.bool,
+  userModPermissions: React.PropTypes.userModPermissions,
 };
 
 export default ListingList;

@@ -5,7 +5,7 @@ import uuid from 'uuid';
 import url from 'url';
 import querystring from 'querystring';
 
-var SCOPE = 'history,identity,mysubreddits,read,subscribe,vote,submit,save';
+var SCOPE = 'history,identity,mysubreddits,read,subscribe,vote,submit,save,modposts';
 
 // set up oauth routes
 var oauthRoutes = function(app) {

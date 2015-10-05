@@ -51,6 +51,7 @@ class IndexPage extends BasePage {
     var token = props.token;
 
     var user = this.state.data.user;
+    var userModPermissions = this.state.data.userModPermissions;
 
     var firstId;
     var lastId;
@@ -130,6 +131,7 @@ class IndexPage extends BasePage {
           <ListingList
             { ...props }
             user={ user }
+            userModPermissions={ userModPermissions }
             showAds={ showAds }
             listings={ listings }
             firstPage={ page }
