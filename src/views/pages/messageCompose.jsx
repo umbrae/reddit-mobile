@@ -3,10 +3,10 @@ import React from 'react';
 import MessageNav from '../components/MessageNav';
 import BasePage from './BasePage';
 
+const composeLink = 'https://www.reddit.com/message/compose';
+
 class MessageComposePage extends BasePage {
   render () {
-    const composeLink = "https://www.reddit.com/message/compose";
-
     return (
       <div className={ `message-page message-${this.props.view}` }>
         <div>
@@ -16,7 +16,9 @@ class MessageComposePage extends BasePage {
               <div className='col-xs-12 col-sm-6'>
                 <div className='well well-lg'>
                   <h3>
-                    Sorry, this isn’t ready yet! You can <a href={ composeLink }>compose a message on the desktop site</a> instead.
+                    Sorry, this isn’t ready yet! You can
+                    <a href={ composeLink }>compose a message on the desktop site</a>
+                    instead.
                   </h3>
                 </div>
               </div>
