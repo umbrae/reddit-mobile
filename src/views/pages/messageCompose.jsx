@@ -1,9 +1,11 @@
 import React from 'react';
 
+import config from '../../config';
+
 import MessageNav from '../components/MessageNav';
 import BasePage from './BasePage';
 
-const composeLink = 'https://www.reddit.com/message/compose';
+const COMPOSE_LINK = `${config.reddit}/message/compose`;
 
 class MessageComposePage extends BasePage {
   render () {
@@ -17,7 +19,7 @@ class MessageComposePage extends BasePage {
                 <div className='well well-lg'>
                   <h3>
                     Sorry, this isn’t ready yet! You can
-                    <a href={ composeLink }>compose a message on the desktop site</a>
+                    <a href={ COMPOSE_LINK }> compose a message on the desktop site </a>
                     instead.
                   </h3>
                 </div>
